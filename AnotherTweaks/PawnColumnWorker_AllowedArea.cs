@@ -8,7 +8,7 @@ namespace AnotherTweaks
 {
     public class PawnColumnWorker_AllowedArea : PawnColumnWorker
     {
-        public override GameFont DefaultHeaderFont => 0;
+        protected override GameFont DefaultHeaderFont => 0;
 
         public override int GetMinWidth(PawnTable table)
         {
@@ -57,12 +57,12 @@ namespace AnotherTweaks
             AreaAllowedGUI.DoAllowedAreaSelectors(rect, pawn);
         }
 
-        public override string GetHeaderTip(PawnTable table)
+        protected override string GetHeaderTip(PawnTable table)
         {
             return base.GetHeaderTip(table) + "\n" + "AT_AllowedAreaTip".Translate();
         }
 
-        public override void HeaderClicked(Rect headerRect, PawnTable table)
+        protected override void HeaderClicked(Rect headerRect, PawnTable table)
         {
             if (Event.current.control)
             {

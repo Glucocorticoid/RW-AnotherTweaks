@@ -34,41 +34,41 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>K:\Games\Rimworld_R1.2-HSK\3-MyPack\#PACKAGES_1.2#\0Harmony.dll</HintPath>
+      <HintPath>..\..\_Assemblies_Mods\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>K:\Games\Rimworld_R1.2-HSK\3-MyPack\#PACKAGES_1.2#\public_access_all\Assembly-CSharp_publicized.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\_Assemblies_13\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Core_SK">
-      <HintPath>..\..\..\..\2-Hardcore-SK\Mods\Core_SK\Assemblies\Core_SK.dll</HintPath>
+      <HintPath>..\..\_Assemblies_Mods\Core_SK.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HugsLib_publicized">
-      <HintPath>..\..\..\#PACKAGES_1.2#\publicized_assemblies\HugsLib_publicized.dll</HintPath>
+    <Reference Include="HugsLib">
+      <HintPath>..\..\_Assemblies_Mods\HugsLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="UnityEngine">
-      <HintPath>K:\Games\Rimworld_R1.2-HSK\3-MyPack\#PACKAGES_1.2#\UnityEngine.dll</HintPath>
+      <HintPath>..\..\_Assemblies_13\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>K:\Games\Rimworld_R1.2-HSK\3-MyPack\#PACKAGES_1.2#\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\_Assemblies_13\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>K:\Games\Rimworld_R1.2-HSK\3-MyPack\#PACKAGES_1.2#\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\..\_Assemblies_13\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>K:\Games\Rimworld_R1.2-HSK\3-MyPack\#PACKAGES_1.2#\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>..\..\_Assemblies_13\UnityEngine.InputLegacyModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>K:\Games\Rimworld_R1.2-HSK\3-MyPack\#PACKAGES_1.2#\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\..\_Assemblies_13\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

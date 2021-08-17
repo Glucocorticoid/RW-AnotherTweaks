@@ -7,7 +7,7 @@ using Verse;
 namespace AnotherTweaks
 {
     [HarmonyPatch(MethodType.Constructor)]
-    [HarmonyPatch(typeof(Bill_Production), new[] {typeof(RecipeDef)})] // constructor with RecipeDef
+    [HarmonyPatch(typeof(Bill_Production), new[] {typeof(RecipeDef), typeof(Precept_ThingStyle) })] // constructor with RecipeDef
     public class DefaultIngredientSearchRadius
     {
         [HarmonyPostfix]

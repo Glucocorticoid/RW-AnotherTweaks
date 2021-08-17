@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using HarmonyLib;
 using Verse;
+using System.Reflection;
 
 namespace AnotherTweaks
 {
@@ -10,10 +11,10 @@ namespace AnotherTweaks
     {
         public static void Patch(Harmony h)
         {
-            var doWindowContents = AccessTools.Method(typeof(EditWindow_Log), nameof(EditWindow_Log.DoWindowContents));
-            var doMessagesListing = AccessTools.Method(typeof(EditWindow_Log), nameof(EditWindow_Log.DoMessagesListing));
-            var selectLastMessage = AccessTools.Method(typeof(EditWindow_Log), nameof(EditWindow_Log.SelectLastMessage));
-            var copyAllMessagesToClipboard = AccessTools.Method(typeof(EditWindow_Log), nameof(EditWindow_Log.CopyAllMessagesToClipboard));
+            var doWindowContents = AccessTools.Method(typeof(EditWindow_Log), "DoWindowContents");
+            var doMessagesListing = AccessTools.Method(typeof(EditWindow_Log), "DoMessagesListing");
+            var selectLastMessage = AccessTools.Method(typeof(EditWindow_Log), "SelectLastMessage");
+            var copyAllMessagesToClipboard = AccessTools.Method(typeof(EditWindow_Log), "CopyAllMessagesToClipboard");
 
             var _this = typeof(LogExtended);
             h.Patch(doWindowContents, transpiler: new HarmonyMethod(_this, nameof(EditWindow_Log_DoWindowContents)));
@@ -24,7 +25,7 @@ namespace AnotherTweaks
 
         public static IEnumerable<CodeInstruction> EditWindow_Log_DoWindowContents(IEnumerable<CodeInstruction> instruction, ILGenerator ilGen)
         {
-            var copyAllMessagesToClipboard = AccessTools.Method(typeof(EditWindow_Log), nameof(EditWindow_Log.CopyAllMessagesToClipboard));
+            var copyAllMessagesToClipboard = AccessTools.Method(typeof(EditWindow_Log), "CopyAllMessagesToClipboard");
             var drawButton = AccessTools.Method(typeof(LogExtended), nameof(DrawButton));
             var code = instruction.ToList();
             bool ok = false;
@@ -74,17 +75,22 @@ namespace AnotherTweaks
             }
         }
 
+        private static FieldInfo mQueue = AccessTools.Field(typeof(Log), "messageQueue");
+
         public static IEnumerable<LogMessage> Messages()
         {
+            var messages = mQueue.GetValue(null) as LogMessageQueue;
+            if (messages == null) throw new System.Exception("Cannot access to log queue");
+
             if (_showMode == ShowMode.All)
-                return Log.messageQueue.Messages;
+                return messages.Messages;
 
             if (_showMode == ShowMode.Messages)
-                return Log.messageQueue.Messages.Where(m => m.type == LogMessageType.Message);
+                return messages.Messages.Where(m => m.type == LogMessageType.Message);
             else if (_showMode == ShowMode.Warnings)
-                return Log.messageQueue.Messages.Where(m => m.type == LogMessageType.Warning);
+                return messages.Messages.Where(m => m.type == LogMessageType.Warning);
             else if (_showMode == ShowMode.Errors)
-                return Log.messageQueue.Messages.Where(m => m.type == LogMessageType.Error);
+                return messages.Messages.Where(m => m.type == LogMessageType.Error);
             return Enumerable.Empty<LogMessage>();
         }
     }

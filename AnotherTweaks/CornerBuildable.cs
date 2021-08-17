@@ -14,12 +14,12 @@ namespace AnotherTweaks
 	//[HarmonyPatch(typeof(TouchPathEndModeUtility), "IsCornerTouchAllowed")]
 	class CornerBuildable
 	{
-		public static bool Prefix(ref bool __result, int cornerX, int cornerZ, Map map)
+		public static bool Prefix(ref bool __result, int cornerX, int cornerZ, PathingContext pc)
 		{
 			if (!Settings.Get().ReplaceStuff_CornerBuildable) return true;
 
 			//public static bool IsCornerTouchAllowed(int cornerX, int cornerZ, int adjCardinal1X, int adjCardinal1Z, int adjCardinal2X, int adjCardinal2Z, Map map)
-			if (map.thingGrid.ThingsAt(new IntVec3(cornerX, 0, cornerZ))
+			if (pc.map.thingGrid.ThingsAt(new IntVec3(cornerX, 0, cornerZ))
 				.Any(t => TouchPathEndModeUtility.MakesOccupiedCellsAlwaysReachableDiagonally(t.def)))
 			{
 				__result = true;
@@ -107,12 +107,12 @@ namespace AnotherTweaks
 		}
 
 		//Private, you say?
-		//public static MethodInfo FindInfo = AccessTools.Method(typeof(HaulAIUtility), "TryFindSpotToPlaceHaulableCloseTo");
+		public static MethodInfo FindInfo = AccessTools.Method(typeof(HaulAIUtility), "TryFindSpotToPlaceHaulableCloseTo");
 		public static bool TryFindSpotToPlaceHaulableCloseTo(Thing haulable, Pawn worker, IntVec3 center, out IntVec3 spot)
 		{
-			//object[] args = new object[] { haulable, worker, center, null};
-            bool result = HaulAIUtility.TryFindSpotToPlaceHaulableCloseTo(haulable, worker, center, out spot);//(bool) FindInfo.Invoke(null, args);
-			//spot = (IntVec3)args[3];
+			object[] args = new object[] { haulable, worker, center, null};
+            bool result = /*HaulAIUtility.TryFindSpotToPlaceHaulableCloseTo(haulable, worker, center, out spot);//*/(bool) FindInfo.Invoke(null, args);
+			spot = (IntVec3)args[3];
 			return result;
 		}
 	}

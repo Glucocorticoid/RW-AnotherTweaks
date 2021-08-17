@@ -14,7 +14,7 @@ namespace AnotherTweaks
 {
     public class HugsLoadStages : ModBase
     {
-        public override bool HarmonyAutoPatch { get; } = false;
+        protected override bool HarmonyAutoPatch { get; } = false;
 
         public override void DefsLoaded()
         {
@@ -61,7 +61,7 @@ namespace AnotherTweaks
             if (!ModActive.ShareTheLoad)
             {
                 h.Patch(AccessTools.Method(typeof(ItemAvailability), nameof(ItemAvailability.ThingsAvailableAnywhere)), prefix: new HarmonyMethod(typeof(DeliverAsMuchAsPossible), nameof(DeliverAsMuchAsPossible.Prefix)));
-                h.Patch(AccessTools.Method(typeof(WorkGiver_ConstructDeliverResources), nameof(WorkGiver_ConstructDeliverResources.ResourceDeliverJobFor)), transpiler: new HarmonyMethod(typeof(BreakToContinue_Patch), nameof(BreakToContinue_Patch.Transpiler)));
+                h.Patch(AccessTools.Method(typeof(WorkGiver_ConstructDeliverResources), "ResourceDeliverJobFor"), transpiler: new HarmonyMethod(typeof(BreakToContinue_Patch), nameof(BreakToContinue_Patch.Transpiler)));
                 sb.Append($"ShareTheLoad ");
             }
 
@@ -69,8 +69,8 @@ namespace AnotherTweaks
             {
                 h.Patch(AccessTools.Method(typeof(TouchPathEndModeUtility), nameof(TouchPathEndModeUtility.IsCornerTouchAllowed)), prefix: new HarmonyMethod(typeof(CornerBuildable), nameof(CornerBuildable.Prefix)));
                 h.Patch(AccessTools.Method(typeof(TouchPathEndModeUtility), nameof(TouchPathEndModeUtility.MakesOccupiedCellsAlwaysReachableDiagonally)), prefix: new HarmonyMethod(typeof(CornerMineableOkay), nameof(CornerMineableOkay.Prefix)));
-                h.Patch(AccessTools.Method(typeof(GenPath), nameof(GenPath.ShouldNotEnterCell)), postfix: new HarmonyMethod(typeof(ShouldNotEnterCellPatch), nameof(ShouldNotEnterCellPatch.Postfix)));
-                h.Patch(AccessTools.Method(typeof(HaulAIUtility), nameof(HaulAIUtility.TryFindSpotToPlaceHaulableCloseTo)), postfix: new HarmonyMethod(typeof(TryFindSpotToPlaceHaulableCloseToPatch), nameof(TryFindSpotToPlaceHaulableCloseToPatch.Postfix)));
+                h.Patch(AccessTools.Method(typeof(GenPath), "ShouldNotEnterCell"), postfix: new HarmonyMethod(typeof(ShouldNotEnterCellPatch), nameof(ShouldNotEnterCellPatch.Postfix)));
+                h.Patch(AccessTools.Method(typeof(HaulAIUtility), "TryFindSpotToPlaceHaulableCloseTo"), postfix: new HarmonyMethod(typeof(TryFindSpotToPlaceHaulableCloseToPatch), nameof(TryFindSpotToPlaceHaulableCloseToPatch.Postfix)));
                 sb.Append($"ReplaceStuff ");
             }
 

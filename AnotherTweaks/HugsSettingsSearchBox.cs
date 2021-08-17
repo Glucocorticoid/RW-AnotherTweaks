@@ -9,7 +9,7 @@ using Verse;
 
 namespace AnotherTweaks
 {
-    [HarmonyPatch(typeof(Dialog_ModSettings), nameof(Dialog_ModSettings.DoWindowContents))]
+    /*[HarmonyPatch(typeof(Dialog_ModSettings), nameof(Dialog_ModSettings.DoWindowContents))]
     public class HugsSettingsSearchBox
     {
         private const float SearchBoxWidth = 300f;
@@ -112,5 +112,5 @@ namespace AnotherTweaks
                 else yield return ci;
             }
         }
-    }
+    }*/
 }
