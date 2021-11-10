@@ -1,4 +1,5 @@
 ﻿using Verse;
+using System;
 
 namespace AnotherTweaks
 {
@@ -11,7 +12,7 @@ namespace AnotherTweaks
             get
             {
                 if (_tdEnhancmentPack == null)
-                    _tdEnhancmentPack = LoadedModManager.RunningModsListForReading.Any(x => x.Name.Equals("TD Enhancement Pack") || x.Name.Equals("TD Enhancement Pack - Dev Build"));
+                    _tdEnhancmentPack = LoadedModManager.RunningModsListForReading.Any(x => x.PackageId.Equals("Uuugggg.TDPack", StringComparison.CurrentCultureIgnoreCase) || x.PackageId.Equals("DEBUuugggg.TDPack", StringComparison.CurrentCultureIgnoreCase));
                 return (bool) _tdEnhancmentPack;
             }
         }
@@ -21,7 +22,7 @@ namespace AnotherTweaks
             get
             {
                 if (_mehniMiscModifications == null)
-                    _mehniMiscModifications = LoadedModManager.RunningModsListForReading.Any(x => x.Name.Equals("4M Mehni's Misc Modifications"));
+                    _mehniMiscModifications = LoadedModManager.RunningModsListForReading.Any(x => x.PackageId.Equals("Mehni.Misc.Modifications", StringComparison.CurrentCultureIgnoreCase));
                 return (bool) _mehniMiscModifications;
             }
         }
@@ -31,7 +32,7 @@ namespace AnotherTweaks
             get
             {
                 if (_coreSk == null)
-                    _coreSk = LoadedModManager.RunningModsListForReading.Any(x => x.Name.Equals("Core SK"));
+                    _coreSk = LoadedModManager.RunningModsListForReading.Any(x => x.PackageId.Equals("skyarkhangel.HSK", StringComparison.CurrentCultureIgnoreCase));
                 return (bool) _coreSk;
             }
         }
@@ -41,7 +42,7 @@ namespace AnotherTweaks
             get
             {
                 if (_shareTheLoad == null)
-                    _shareTheLoad = LoadedModManager.RunningModsListForReading.Any(x => x.Name.Equals("Share The Load") || x.Name.Equals("Share The Load - Dev Build"));
+                    _shareTheLoad = LoadedModManager.RunningModsListForReading.Any(x => x.PackageId.Equals("Uuugggg.ShareTheLoad", StringComparison.CurrentCultureIgnoreCase) || x.PackageId.Equals("DEBUuugggg.ShareTheLoad", StringComparison.CurrentCultureIgnoreCase));
                 return (bool) _shareTheLoad;
             }
         }
@@ -51,7 +52,7 @@ namespace AnotherTweaks
             get
             {
                 if (_replaceStuff == null)
-                    _replaceStuff = LoadedModManager.RunningModsListForReading.Any(x => x.Name.Equals("Replace Stuff") || x.Name.Equals("Replace Stuff - Dev Build"));
+                    _replaceStuff = LoadedModManager.RunningModsListForReading.Any(x => x.PackageId.Equals("Uuugggg.ReplaceStuff", StringComparison.CurrentCultureIgnoreCase) || x.PackageId.Equals("DEBUuugggg.ReplaceStuff", StringComparison.CurrentCultureIgnoreCase));
                 return (bool) _replaceStuff;
             }
         }

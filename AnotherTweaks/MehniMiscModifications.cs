@@ -28,35 +28,61 @@ namespace AnotherTweaks
         #endregion BetterHostileReadouts
 
         #region showLovers
-        public static IEnumerable<CodeInstruction> DoWindowContents_Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        public static IEnumerable<CodeInstruction> DoWindowContents_Transpiler(IEnumerable<CodeInstruction> codeInstructions, ILGenerator gen)
         {
-            MethodInfo getViewRectWidth = AccessTools.Property(typeof(Rect), nameof(Rect.width)).GetGetMethod();
+            var label = gen.DefineLabel();
+            MethodInfo widgetsLabel = AccessTools.Method(typeof(Widgets), nameof(Widgets.Label), new Type[] { typeof(Rect), typeof(string) });
             MethodInfo getPawnName = AccessTools.Property(typeof(Entity), nameof(Entity.LabelCap)).GetGetMethod();
-            MethodInfo makeReeect = AccessTools.Method(typeof(MehniMiscModifications), nameof(MehniMiscModifications.ShowHeart));
+            MethodInfo endScrollView = AccessTools.Method(typeof(Widgets), nameof(Widgets.EndScrollView));
 
             List<CodeInstruction> instructionList = codeInstructions.ToList();
 
             for (int i = 0; i < instructionList.Count; i++)
             {
-                if (i > 2 && instructionList[i - 1].Calls(getPawnName))
+                // We want to inject the same code in two spots.
+
+                // insert after `void Widgets.DrawLabel` - stack is neutral, so we can branch away
+                if (i > 1 && instructionList[i - 1].Calls(getPawnName) && instructionList[i].Calls(widgetsLabel)) // last inst won't be a call to getPawnName
                 {
                     yield return instructionList[i];
-                    yield return new CodeInstruction(OpCodes.Ldloca_S, 1);
-                    yield return new CodeInstruction(OpCodes.Call, getViewRectWidth);
-                    yield return new CodeInstruction(OpCodes.Ldc_R4, offsetPosition);
-                    yield return new CodeInstruction(OpCodes.Mul); //viewrect.width * 0.55
-                    yield return new CodeInstruction(OpCodes.Ldloc_2); //y
-                    yield return new CodeInstruction(instructionList[i - 2]); //pawn
-                    yield return new CodeInstruction(OpCodes.Call, makeReeect);
-                    yield return new CodeInstruction(OpCodes.Brtrue, instructionList.Where(x => x != null && x.labels != null && x.labels.Any()).Skip(instructionList.Where(x => x != null && x.labels != null && x.labels.Any()).Count() - 2).First().labels.First()); //2nd to last ret
+                    foreach (var inst in InsertDrawHeart(label, new List<CodeInstruction> { instructionList[i - 2] }))
+                        yield return inst;
+                }
+                // insert after `bool accepted = acceptanceReport.Accepted`, stack is neutral here.
+                else if (i < instructionList.Count - 4 && instructionList[i + 3].Calls(getPawnName) && !instructionList[i + 4].Calls(widgetsLabel))
+                {
+                    yield return instructionList[i];
+
+                    foreach (var inst in InsertDrawHeart(label, new List<CodeInstruction> { instructionList[i + 1], instructionList[i + 2] }))
+                        yield return inst;
                 }
                 else
-                    yield return instructionList[i];
+                {
+                    if (instructionList[i].Calls(endScrollView))
+                        yield return instructionList[i].WithLabels(label);
+                    else
+                        yield return instructionList[i];
+                }
             }
         }
 
         private static float resizeHeart = 0.50f;
         private static float offsetPosition = 0.62f;
+        private static MethodInfo makeReeect = AccessTools.Method(typeof(MehniMiscModifications), nameof(MehniMiscModifications.ShowHeart));
+        private static MethodInfo getViewRectWidth = AccessTools.Property(typeof(Rect), nameof(Rect.width)).GetGetMethod();
+
+        private static IEnumerable<CodeInstruction> InsertDrawHeart(Label label, List<CodeInstruction> getPawn)
+        {
+            yield return new CodeInstruction(OpCodes.Ldloca_S, 1);
+            yield return new CodeInstruction(OpCodes.Call, getViewRectWidth);
+            yield return new CodeInstruction(OpCodes.Ldc_R4, offsetPosition);
+            yield return new CodeInstruction(OpCodes.Mul); //viewrect.width * 0.55
+            yield return new CodeInstruction(OpCodes.Ldloc_2); //y
+            foreach (var inst in getPawn)
+                yield return inst;
+            yield return new CodeInstruction(OpCodes.Call, makeReeect);
+            yield return new CodeInstruction(OpCodes.Brtrue, label); // leave.s   
+        }
 
         private static bool ShowHeart(float x, float y, Pawn pawn)
         {
@@ -82,16 +108,23 @@ namespace AnotherTweaks
                 Vector2 iconSize = new Vector2(iconFor.width, iconFor.height) * resizeHeart;
                 Rect drawRect = new Rect(x, y, iconSize.x, iconSize.y);
                 TooltipHandler.TipRegion(drawRect, directPawnRelation.otherPawn.LabelCap);
-                GUI.DrawTexture(drawRect, iconFor);
 
-                if (iconFor == Textures.BondBrokenIcon && Mouse.IsOver(drawRect) && Input.GetMouseButtonDown(0))
+                if (iconFor == Textures.BondBrokenIcon) // if its a broken heart - allow them to click on the broken heart to assign the missing partner to the bed
                 {
-                    if (pawn.ownership?.OwnedBed?.SleepingSlotsCount >= 2)
+                    if (Widgets.ButtonImage(drawRect, iconFor, Color.white, Color.red, true))
                     {
-                        pawn.ownership.OwnedBed.GetComp<CompAssignableToPawn>().TryAssignPawn(directPawnRelation.otherPawn);
-                        return true;
+                        if (pawn.ownership?.OwnedBed?.SleepingSlotsCount >= 2)
+                        {
+                            pawn.ownership.OwnedBed.GetComp<CompAssignableToPawn>().TryAssignPawn(directPawnRelation.otherPawn);
+                            return true;
+                        }
                     }
                 }
+                else
+                {
+                    GUI.DrawTexture(drawRect, iconFor);
+                }
+
             }
             return false;
         }
